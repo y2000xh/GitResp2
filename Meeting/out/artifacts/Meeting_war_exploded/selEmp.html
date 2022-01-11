@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container">
+    <h2 class="page-header">
+        人员管理
+        <small>搜素员工</small>
+    </h2>
+    <fieldset id="">
+        <legend>搜素员工</legend>
+        <div class="form-group">
+            <form action="" method="post" class="form-inline">
+                <label for="">姓名:</label>
+                <input type="text" id="ename" placeholder="请输入姓名" class="form-control"/>
+                <label for="">账号名:</label>
+                <input type="text" id="username" placeholder="请输入账号名" class="form-control"/>
+                <label for="">状态:</label>
+                <div class="radio">
+                    <label for="">
+                        <input type="radio" name="status" value="1" checked/>已审批
+                    </label>
+                    <label for="">
+                        <input type="radio" name="status" value="0"/>待审批
+                    </label>
+                    <label for="">
+                        <input type="radio" name="status" value="2"/>已关闭
+                    </label>
+                    <label for="">
+                        <input type="radio" name="status" value="3"/>所有
+                    </label>
+                </div>
+                <input type="button" id="btn1" value="查询" class="btn btn-primary"/>
+                <input type="reset" value="重置" class="btn btn-danger"/>
+            </form>
+        </div>
+    </fieldset>
+    <!-- 查询结果开始 -->
+    <strong>查询结果:</strong>
+    <table class="table table-hover">
+        <thead>
+        <tr class="info">
+            <td>姓名</td>
+            <td>账号名</td>
+            <td>联系电话</td>
+            <td>电子邮件</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <!-- 查询结果开始 -->
+    <nav class="text-center">
+        <ul class="pagination">
+            <li><a href="#">&laquo;</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li class="active"><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">&raquo;</a></li>
+        </ul>
+    </nav>
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        //搜索按钮
+        $("#btn1").click(function () {
+            status = $("input[name='status']:checked").val();
+
+            $.post("findEmpLikeServlet", {
+                ename: $("#ename").val(),
+                username: $("#username").val(),
+                status: status
+            }, function (data) {
+                console.log("approval=" + data);
+                //先将tbody中的数据清空
+                $("tbody").empty();
+                $.each(data, function (index, el) {
+                    var html = "<tr>";
+                    html += "<td>" + el.ename + "</td>";
+                    html += "<td>" + el.username + "</td>";
+                    html += "<td>" + el.phone + "</td>";
+                    html += "<td>" + el.email + "</td>";
+                    html += '<td><input class="btn1" type="button" id="' + el.username + '"   value="关闭账号" /></td></tr>';
+                    //将html拼接到tbody中
+                    $("tbody").append(html);
+                })
+
+                //关闭按钮
+                $(".btn1").click(function () {
+                    var username = $(this).attr("id");
+
+                    $.post("updateEmpStatus2Servlet", {username: username}, function (data) {
+                        //刷新页面
+                        location.reload();
+                    })
+                })
+            }, "json")
+        })
+
+
+    })
+</script>
+</body>
+</html>

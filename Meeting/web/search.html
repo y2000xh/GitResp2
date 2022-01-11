@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css"/>
+</head>
+
+<body>
+<div class="container">
+    <h2 class="page-header">
+        会议预定
+        <small>搜索会议</small>
+    </h2>
+    <fieldset id="">
+        <legend>搜索会议</legend>
+        <div class="form-group">
+            <form action="" method="post" class="form-inline">
+                <div class="col-md-4">
+                    <label for="">会议名称:</label>
+                    <input type="text" id="mname" placeholder="请输入会议名称" class="form-control"/>
+                </div>
+                <div class="col-md-4">
+                    <label for="">会议室名称:</label>
+                    <input type="text" id="rid" placeholder="请输入会议室名称" class="form-control"/>
+                </div>
+                <div class="col-md-4">
+                    <label for="">预订者姓名:</label>
+                    <input type="text" id="eid" placeholder="请输入预订者姓名" class="form-control"/>
+                </div>
+                <div class="col-md-12">
+                    <label for="">预定日期:</label> 从
+                    <input type="text" id="data11" placeholder="" class="form-control"/> 到
+                    <input type="text" id="data12" placeholder="" class="form-control"/>
+                </div>
+                <div class="col-md-12">
+                    <label for="">会议日期:</label> 从
+                    <input type="text" id="data21" placeholder="" class="form-control"/> 到
+                    <input type="text" id="data22" placeholder="" class="form-control"/>
+                </div>
+
+                <div class="text-center">
+                    <input type="button" id="btn1" value="查询" class="btn btn-primary"/>
+                    <input type="reset" value="重置" class="btn btn-danger"/>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+    <!-- 查询结果开始 -->
+    <strong>查询结果:</strong>
+    <table class="table table-hover">
+        <thead>
+        <tr class="info">
+            <td>会议名称</td>
+            <td>会议室名称</td>
+            <td>会议开始时间</td>
+            <td>会议结束时间</td>
+            <td>会议预定时间</td>
+            <td>预定者</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <!-- 查询结果开始 -->
+    <nav class="text-center">
+        <ul class="pagination">
+            <li>
+                <a href="#">&laquo;</a>
+            </li>
+            <li>
+                <a href="#">1</a>
+            </li>
+            <li>
+                <a href="#">2</a>
+            </li>
+            <li class="active">
+                <a href="#">3</a>
+            </li>
+            <li>
+                <a href="#">4</a>
+            </li>
+            <li>
+                <a href="#">5</a>
+            </li>
+            <li>
+                <a href="#">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+<!--引入时间框js-->
+<script src="js/jquery.datetimepicker.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    $(function () {
+        //给开始时间绑定日历框
+        $("#data11").datetimepicker({
+            lang: 'ch',
+            format: 'Y-m-d H:i:00',
+            formatDate: 'Y-m-d H:i:00',
+            step: 1
+        });
+        //给结束时间绑定日历框
+        $('#data12').datetimepicker({
+            lang: 'ch',
+            format: 'Y-m-d H:i:00',
+            formatDate: 'Y-m-d H:i:00',
+            step: 1
+        });//给开始时间绑定日历框
+        $("#data21").datetimepicker({
+            lang: 'ch',
+            format: 'Y-m-d H:i:00',
+            formatDate: 'Y-m-d H:i:00',
+            step: 1
+        });
+        //给结束时间绑定日历框
+        $('#data22').datetimepicker({
+            lang: 'ch',
+            format: 'Y-m-d H:i:00',
+            formatDate: 'Y-m-d H:i:00',
+            step: 1
+        });
+
+        $("#btn1").click(function () {
+
+            $.post("findMeetingByLikeServlet", {
+                mname: $("#mname").val(),
+                rname: $("#rid").val(),
+                ename: $("#eid").val(),
+                data11: $("#data11").val(),
+                data12: $("#data12").val(),
+                data21: $("#data21").val(),
+                data22: $("#data22").val()
+            }, function (data) {
+                //先将tbody中的数据清空dname
+                $("tbody").empty();
+                $.each(data, function (index, el) {
+                    console.log(el);
+                    var html = "<tr>";
+                    html += "<td>" + el[0] + "</td>";
+                    html += "<td>" + el[1] + "</td>";
+                    html += "<td>" + el[2] + "</td>";
+                    html += "<td>" + el[3] + "</td>";
+                    html += "<td>" + el[4] + "</td>";
+                    html += "<td>" + el[5] + "</td>";
+                    html += '<td><a type="button" id="' + el[6] + '" value="显示详情" href="search_details.html?rid=' + el[6] + '">显示详情</a></td></tr>';
+                    //将html拼接到tbody中
+                    $("tbody").append(html);
+                })
+
+            }, "json")
+        })
+
+
+    })
+</script>
+</body>
+
+</html>

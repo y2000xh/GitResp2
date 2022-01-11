@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录界面</title>
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <!--用来引入外部文件-->
+    <link rel="icon" href="img/favicon.ico">
+</head>
+<body>
+<!-- 登录区主体开始 -->
+<div id="main">
+    <!-- 头像区开始 -->
+    <div id="header-border">
+        <!-- 头像区内部开始 -->
+        <div id="header-pic">
+
+        </div>
+        <!-- 头像区内部结束 -->
+    </div>
+    <!-- 头像区结束 -->
+    <!-- 账号密码开始 -->
+    <div id="account">
+        <form id="loginForm" method="get" action="">
+            <span class="show">USERNAME</span>
+            <div class="input">
+
+                <input type="text" placeholder="please input username" id="username">
+            </div>
+            <span class="show">PASSWORD</span>
+            <div class="input">
+
+                <input type="password" placeholder="please input password" id="password">
+            </div>
+            <div class="msg"></div>
+            <span class="show">DEFAULT LOGON TIME</span>
+            <div class="input">
+                <select name="timelength" id="timelength">
+                    <option value="0" selected>每次都需要登录</option>
+                    <option value="1">1小时之内免密</option>
+                    <option value="3">3小时之内免密</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <!-- 账号密码结束 -->
+    <!-- 登录按钮开始 -->
+    <button class="login-btn" id="subBtn">Login</button>
+    <!-- 登录按钮结束 -->
+    <!-- 登录区底部开始 -->
+    <div id="footer">
+        <a href="#">Forget Password?</a>
+    </div>
+    <!-- 登录区底部结束 -->
+</div>
+<!-- 登录区主体结束 -->
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#username").blur(function () {
+            var username = $("#username").val();
+            if (username == null || username == '') {
+                $(".msg").html("账户名不能为空").css("color", "red");
+                return;
+            } else {
+                $(".msg").html("");
+            }
+        })
+        $("#password").blur(function () {
+            //账户名和密码的非空验证
+            var password = $("#password").val();
+            if (password == null || password == "") {
+                $(".msg").html("密码不能为空").css("color", "red");
+                return;
+            } else {
+                $(".msg").html("");
+            }
+        })
+
+        $.get("UserLoginServlet", function (data) {
+            //校验账户的状态以及账户名密码
+            if (data == '0') {
+                $(".msg").html("账户正在审核中，请联系管理员");
+            } else if (data == '1') {
+                $(".msg").html(" ");
+                //跳转到index.html页面
+                location.href = "index.html";
+            } else if (data == '2') {
+                $(".msg").html("很抱歉，账户审核失败");
+            } else if (data == '3') {
+                $(".msg").html("密码错误，请重新输入");
+            } else if (data == '4') {
+                $(".msg").html("账户不存在");
+            }
+        });
+        $("#subBtn").click(function () {
+            //发送ajax验证
+            $.post("UserLoginServlet", {
+                username: $("#username").val(),
+                password: $("#password").val(),
+                timelength: $("#timelength").val()
+            }, function (data) {
+                //校验账户的状态以及账户名密码
+                if (data == '0') {
+                    $(".msg").html("账户正在审核中，请联系管理员");
+                } else if (data == '1') {
+                    $(".msg").html(" ");
+                    //跳转到index.html页面
+                    location.href = "index.html";
+                } else if (data == '2') {
+                    $(".msg").html("很抱歉，账户审核失败");
+                } else if (data == '3') {
+                    $(".msg").html("密码错误，请重新输入");
+                } else if (data == '4') {
+                    $(".msg").html("账户不存在");
+                }
+            })
+        });
+
+
+    })
+</script>
+</body>
+</html>

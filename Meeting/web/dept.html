@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+
+<body>
+<div class="container">
+    <h2 class="page-header">
+        人员管理
+        <small>部门管理</small>
+    </h2>
+    <fieldset id="">
+        <legend>添加部门</legend>
+        <div class="form-group">
+            <form action="" method="post" class="form-inline">
+                <label for="">部门名称:</label>
+                <input type="text" placeholder="请输入部门名称" class="form-control" id="bname"/>
+                <input type="button" value="添加" class="btn btn-primary" id="addBtn"/>
+                <span id="addspan"></span>
+            </form>
+        </div>
+    </fieldset>
+    <!-- 添加部门开始 -->
+    <strong>所有部门:</strong>
+    <table class="table table-hover">
+        <thead>
+        <tr class="info">
+            <td>部门编号</td>
+            <td>部门名称</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>技术部</td>
+            <td>
+                <a class="btn btn-default" href="#">删除</a>
+            </td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>销售部</td>
+            <td>
+                <a class="btn btn-default" href="#">删除</a>
+            </td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>市场部</td>
+            <td>
+                <a class="btn btn-default" href="#">删除</a>
+            </td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>行政部</td>
+            <td><a class="btn btn-default" href="#">删除</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- 添加部门开始 -->
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+
+        //发送一个ajax 查询数据库中所有的数据
+        $.post("ShowAllDeptServlet", function (data) {
+            //先将tbody中的数据清空
+            $("tbody").empty();
+            $.each(data, function (index, el) {
+                var html = "<tr>";
+                html += "<td>" + el.did + "</td>";
+                html += "<td>" + el.dname + "</td>";
+                html += '<td><input type="button" did="' + el.did + '" ' +
+                    'class="delBtn"  value="删除" /></td></tr>';
+                //将html拼接到tbody中
+                $("tbody").append(html);
+            })
+
+            //加载事件完成之后再对按钮进行注册事件
+            //给删除按钮绑定一个点击事件
+            $(".delBtn").click(function () {
+                //this指的是事件源对象
+                var did = $(this).attr("did");
+                console.log("你选择的是" + did + "的删除按钮");
+                //发送ajax请求
+                $.get("DeleteDeptByIdServlet", {did: did}, function (data) {
+                    location.reload();//重新刷新页面
+                })
+            })
+        }, "json")
+
+        //给添加按钮设置一个点击事件
+        $("#addBtn").click(function () {
+
+            $.post("FindDeptByDeptnoServlet", {bname: $("#bname").val()}, function (data) {
+
+                if (-1 != data) {
+                    $("#addspan").html("该部门已存在，请重新输入").css("color", "red");
+                } else {
+                    $("#addspan").html("");
+                    $.post("addDeptServlet", {bname: $("#bname").val()}, function (data) {
+                        //刷新一下
+                        location.reload();
+                        //跳转到index.html 相当于刷新一下
+                        // location.href = "index.html";
+                    })
+                }
+            })
+        })
+
+
+    })
+</script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+
+<body>
+<div class="container">
+    <h2 class="page-header">
+        人员管理
+        <small>注册审批</small>
+    </h2>
+    <!-- 注册审批开始 -->
+    <strong>所有待审批的注册信息:</strong>
+    <table class="table table-hover">
+        <thead>
+        <tr class="info">
+            <td>姓名</td>
+            <td>账号名</td>
+            <td>联系电话</td>
+            <td>电子邮件</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <!-- 注册审批结束 -->
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+    $(function () {
+        $.post("findEmpBystatusServlet", function (data) {
+            console.log("approval=" + data);
+            //先将tbody中的数据清空
+            $("tbody").empty();
+            $.each(data, function (index, el) {
+                var html = "<tr>";
+                html += "<td>" + el.ename + "</td>";
+                html += "<td>" + el.username + "</td>";
+                html += "<td>" + el.phone + "</td>";
+                html += "<td>" + el.email + "</td>";
+                html += '<td><input type="button" id="' + el.username + '"   value="通过" />' +
+                    '<input type="button" id="' + el.username + '"   value="不通过" /></td></tr>';
+                //将html拼接到tbody中
+                $("tbody").append(html);
+            })
+            $("input[value='通过']").click(function () {
+                var username = $(this).attr("id");
+                $.get("updateEmpStatusServlet", {
+                    username: username,
+                    status: 1
+                }, function (data) {
+                    location.reload();//重新刷新页面
+                })
+            })
+            $("input[value='不通过']").click(function () {
+                var username = $(this).attr("id");
+                $.post("updateEmpStatusServlet", {username: username, status: 2}, function (data) {
+                    location.reload();//重新刷新页面
+                })
+            })
+        }, "json");
+    })
+</script>
+</body>
+
+</html>

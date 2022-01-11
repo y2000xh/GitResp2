@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container">
+    <h2 class="page-header">
+        会议预定
+        <small>添加会议室</small>
+    </h2>
+    <fieldset id="">
+        <legend>会议室信息</legend>
+        <form class="form-horizontal col-md-8">
+            <div class="form-group">
+                <label for="" class="col-md-2">门牌号</label>
+                <div class="col-md-10">
+                    <input type="text" id="housenum" placeholder="请输入门牌号" class="form-control"/>
+                    <span id="spanhousenum"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">会议室名称</label>
+                <div class="col-md-10">
+                    <input type="text" id="rname" placeholder="请输入会议室名称" class="form-control"/>
+                    <span id="spanrname"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">最多容纳人数</label>
+                <div class="col-md-10">
+                    <input type="text" id="maxnum" placeholder="请输入最多容纳人数" class="form-control"/>
+                    <span id="spanmax"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">当前状态:</label>
+                <div class="radio col-md-10">
+                    <label for="startuseing">
+                        <input type="radio" name="r" checked id="startuseing" value="0"/>启用
+                    </label>
+                    <label for="forbidden">
+                        <input type="radio" name="r" id="forbidden" value="1"/>停用
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">备注:</label>
+                <div class="col-md-10">
+                    <textarea class="form-control" id="notes" name="" rows="" cols=""></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <input type="button" value="注册" class="btn btn-success" id="btn"/>
+                    <input type="reset" value="重置" class="btn btn-danger"/>
+                </div>
+            </div>
+        </form>
+    </fieldset>
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        //非空验证
+        $("#maxnum").blur(function () {
+            var maxnum = $("#maxnum").val();
+            if (maxnum == "" || maxnum == null) {
+                $("#spanmax").html("最大人数不能为空").css("color", "red");
+            }
+        })
+
+        //判断是门牌号否存在
+        $("#housenum").blur(function (data) {
+            $.post("FindRoomByHousenumServlet", {housenum: $("#housenum").val()}, function (data) {
+                if (-1 != data) {
+                    $("#spanhousenum").html("该门牌号已存在，请重新输入").css("color", "red");
+                } else {
+                    $("#spanhousenum").html("ok").css("color", "green");
+                }
+            })
+        })
+        //判断是会议室名称否存在
+        $("#rname").blur(function (data) {
+            $.post("FindRoomByRnameServlet", {rname: $("#rname").val()}, function (data) {
+                if (-1 != data) {
+                    $("#spanrname").html("该名称已存在，请重新输入").css("color", "red");
+                } else {
+                    $("#spanrname").html("ok").css("color", "green");
+                }
+            })
+        })
+        //点击注册按钮
+        $("#btn").click(function () {
+            status = $("input[name='r']:checked").val();
+
+            $.post("addRoomServlet", {
+                housenum: $("#housenum").val(),
+                rname: $("#rname").val(),
+                maxnum: $("#maxnum").val(),
+                status: status,
+                notes: $("#notes").val()
+            }, function (data) {
+                location.reload();
+            })
+        })
+
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <style type="text/css">
+        #show img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="page-header">
+        人员管理
+        <small>员工注册</small>
+    </h2>
+    <fieldset id="">
+        <legend>员工信息</legend>
+        <form class="form-horizontal col-md-8">
+            <div class="form-group">
+                <label for="" class="col-md-2">请选择头像</label>
+                <div class="col-md-10">
+                    <input id="image" type="file" placeholder="请选择头像" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">姓名</label>
+                <div class="col-md-10">
+                    <input type="text" id="ename" placeholder="请输入用户名" class="form-control"/>
+                    <span id="spanename"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">账号名</label>
+                <div class="col-md-10">
+                    <input type="text" placeholder="请输入账号名" class="form-control"
+                           id="username" name="username"/>
+                    <span id="showMsg"></span>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">密码</label>
+                <div class="col-md-10">
+                    <input type="password" id="password" placeholder="请输入密码" class="form-control"/>
+                    <span id="spanpwd1"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">确认密码</label>
+                <div class="col-md-10">
+                    <input type="password" id="pwd" placeholder="请确认密码" class="form-control"/>
+                    <span id="spanpwd2"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">联系电话</label>
+                <div class="col-md-10">
+                    <input type="text" id="phone" placeholder="请输入联系电话" class="form-control"/>
+                    <span id="spanphone"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">电子邮件</label>
+                <div class="col-md-10">
+                    <input type="text" id="email" placeholder="请输入电子邮件" class="form-control"/>
+                    <span id="spanemail"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2">所在部门</label>
+                <div class="col-md-10">
+                    <select name="" id="option" class="form-control">
+                        <option value="">技术部</option>
+                        <option value="">市场部</option>
+                        <option value="">社招部</option>
+                        <option value="">行政部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <input type="button" id="btn1" value="注册" class="btn btn-success"/>
+                    <input type="reset" value="重置" class="btn btn-danger"/>
+                </div>
+            </div>
+        </form>
+        <div class="col-md-2">
+            <div id="show">
+                <img src="" alt="请选择上传的头像图片" id="pic"/>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+<script src="js/pic.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#username").blur(function () {
+            var username = $("#username").val();
+            // 空校验
+            if (username == null || username == "") {
+                $("#showMsg").html("请输入账号名哦~~~").css("color", "red");
+                return;
+            } else {
+                $("#showMsg").html("");
+            }
+
+            // 内容校验
+            $.get("findEmpByUsernameServlet", {username: $("#username").val()}, function (data) {
+                if (data != null && data != '') {
+                    $("#showMsg").html("账号不可用").css("color", "red");
+                    return;
+                } else {
+                    $("#showMsg").html("账号名可用").css("color", "green");
+                    return;
+                }
+            });
+        });
+        $("#ename").blur(function () {
+            var ename = $("#ename").val();
+            // 空校验
+            if (ename == null || ename == "") {
+                $("#spanename").html("请输入姓名哦~~~").css("color", "red");
+                return;
+            } else {
+                $("#spanename").html("");
+            }
+        });
+        $("#password").blur(function () {
+            var password = $("#password").val();
+            // 空校验
+            if (password == null || password == "") {
+                $("#spanpwd1").html("请输入密码哦~~~").css("color", "red");
+                return;
+            } else {
+                $("#spanpwd1").html("");
+            }
+        });
+        $("#pwd").blur(function () {
+            var password = $("#password").val();
+            var pwd = $("#pwd").val();
+            // 空校验
+            if (pwd == null || pwd == "") {
+                $("#spanpwd2").html("请输入确认密码哦~~~").css("color", "red");
+                return;
+            } else {
+                $("#spanpwd2").html("");
+            }
+            if (password = !pwd) {
+                $("#spanpwd2").html("两次密码不一致，请重新输入").css("color", "red");
+                return;
+            } else {
+                $("#spanpwd2").html("");
+            }
+        });
+        $("#phone").blur(function () {
+            var phone = $("#phone").val();
+            if (phone == null || phone == "") {
+                $("#spanphone").html("请输入电话~~~").css("color", "red");
+                return;
+            } else {
+                $("#spanphone").html("");
+            }
+        });
+        $("#email").blur(function () {
+            var email = $("#email").val();
+            var r = /^\w+@\w+(\.[a-z]{2,6}){1,2}$/;
+            if (email == null || email == "") {
+                $("#spanemail").html("请输入邮箱~~~").css("color", "red");
+                return;
+            } else {
+                $("#spanemail").html("");
+            }
+            if (!r.test(email)) {
+                $("#spanemail").html("邮箱格式不正确").css("color", "red");
+                return;
+            } else {
+                $("#spanemail").html("ok").css("color", "green");
+            }
+        });
+        //给下拉框设置内容
+        $.post("ShowAllDeptServlet", function (data) {
+            //清空下拉框内容
+            $("#option").empty();
+            $.each(data, function (index, el) {
+                var html = "<option id='" + el.did + "' value = '" + el.did + "'>" + el.dname + "</option>"
+                $("#option").append(html);
+                console.log(html);
+            })
+        }, "json")
+        //提交
+        $("#btn1").click(function () {
+            var did = $("#option").val();
+            $.post("insertEmpServlet", {
+                username: $("#username").val(),
+                ename: $("#ename").val(),
+                password: $("#password").val(),
+                phone: $("#phone").val(),
+                email: $("#email").val(),
+                did: did
+            }, function (data) {
+                location.reload();
+            }, "json")
+        })
+
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+
+<body>
+<div class="container">
+    <h2 class="page-header">
+        会议预定
+        <small>查看会议室</small>
+    </h2>
+    <fieldset id="">
+        <legend>会议室信息</legend>
+        <form class="form-horizontal col-md-8" method="post" action="">
+            <!-- 将id以隐藏域的形式保存在jsp页面，为了方便之后的修改 -->
+            <input type="hidden" value="" name="roomid"/>
+            <div class="form-group">
+                <label for="" class="col-md-3">门牌号</label>
+                <div class="col-md-9">
+                    <input type="text" id="housenum" name="roomnum" placeholder="请输入门牌号" class="form-control" value=""/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-3">会议室名称</label>
+                <div class="col-md-9">
+                    <input type="text" id="rname" name="roomname" placeholder="请输入会议室名称" class="form-control" value=""/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-3">最多容纳人数</label>
+                <div class="col-md-9">
+                    <input type="text" id="maxnum" name="capacity" placeholder="请输入最多容纳人数" class="form-control"
+                           value=""/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-3">当前状态:</label>
+                <div class="radio col-md-9">
+
+                    <label for="startuseing">
+                        <input id="startuseing" type="radio" name="status" value="0"/>启用
+                    </label>
+                    <label for="forbidden">
+                        <input id="forbidden" type="radio" name="status" value="1"/>停用
+                    </label>
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-3">备注:</label>
+                <div class="col-md-9">
+                    <textarea id="notes" class="form-control" name="description" rows="" cols=""></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <input id="sumbit" type="button" value="修改" class="btn btn-success"/>
+                    <input type="button" value="返回" class="btn btn-danger" onclick="history.back();"/>
+                </div>
+            </div>
+        </form>
+    </fieldset>
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        console.log(location.search);
+        var rid = location.search.substring(5);
+
+        $.post("FindRoomByRidServlet", {rid: rid}, function (data) {
+            console.log(data);
+            $("#housenum").val(data.housenum);
+            $("#rname").val(data.rname);
+            $("#maxnum").val(data.maxnum);
+            $("[name='status'][value=" + data.status + "]").prop("checked", "checked");
+            $("#notes").val(data.notes);
+            //点击修改按钮进行修改
+            $("#sumbit").click(function () {
+                $.post("updateRoomByRidServlet", {
+                    rid: rid,
+                    housenum: $("#housenum").val(),
+                    rname: $("#rname").val(),
+                    maxnum: $("#maxnum").val(),
+                    status: $("input[name='status']:checked").val(),
+                    notes: $("#notes").val()
+                }, function () {
+                    location.href = "sel.html";
+                }, "json")
+            })
+        }, "json")
+
+
+    })
+</script>
+</body>
+
+</html>

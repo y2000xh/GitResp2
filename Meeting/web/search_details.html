@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+
+<body>
+<div class="container">
+    <h2 class="page-header">
+        会议详情
+        <small>会议</small>
+    </h2>
+
+    <!-- 查询结果开始 -->
+    <strong>查询结果:</strong>
+    <table class="table table-hover">
+        <thead>
+        <tr class="info">
+            <td>会议编号</td>
+            <td>会议名称</td>
+            <td>参会人数</td>
+            <td>会议开始时间</td>
+            <td>会议结束时间</td>
+            <td>会议预定时间</td>
+            <td>会议室名称</td>
+            <td>预定者编号</td>
+            <td>预定者</td>
+            <td>会议状态</td>
+            <td>会议说明</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <!-- 查询结果开始 -->
+    <nav class="text-center">
+        <ul class="pagination">
+            <li>
+                <a href="#">&laquo;</a>
+            </li>
+            <li>
+                <a href="#">1</a>
+            </li>
+            <li>
+                <a href="#">2</a>
+            </li>
+            <li class="active">
+                <a href="#">3</a>
+            </li>
+            <li>
+                <a href="#">4</a>
+            </li>
+            <li>
+                <a href="#">5</a>
+            </li>
+            <li>
+                <a href="#">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        var mid = location.search.substring(5);
+        console.log(mid);
+        //发送ajax发送请求 显示会议详细信息
+        $.post("findMeetingByMnameServlet", {
+            mid: mid,
+        }, function (data) {
+            //先将tbody中的数据清空dname
+            $("tbody").empty();
+            $.each(data, function (index, el) {
+                console.log(el);
+                var html = "<tr>";
+                html += "<td>" + el[0] + "</td>";
+                html += "<td>" + el[1] + "</td>";
+                html += "<td>" + el[2] + "</td>";
+                html += "<td>" + el[3] + "</td>";
+                html += "<td>" + el[4] + "</td>";
+                html += "<td>" + el[5] + "</td>";
+                html += "<td>" + el[6] + "</td>";
+                html += "<td>" + el[7] + "</td>";
+                html += "<td>" + el[8] + "</td>";
+                html += "<td>" + el[9] + "</td>";
+                html += "<td>" + el[10] + "</td>";
+                html += "</tr>";
+                //将html拼接到tbody中
+                $("tbody").append(html);
+            })
+
+        }, "json")
+
+    })
+</script>
+</body>
+
+</html>

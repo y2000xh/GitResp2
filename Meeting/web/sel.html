@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container">
+    <h2 class="page-header">
+        会议预定
+        <small>查看会议室</small>
+    </h2>
+    <fieldset id="">
+        <legend>所有会议室</legend>
+        <table class="table table-hover">
+            <thead>
+            <tr class="info">
+                <td>门牌编号</td>
+                <td>会议室名称</td>
+                <td>容纳人数</td>
+                <td>当前状态</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>101</td>
+                <td>第一会议室</td>
+                <td>10</td>
+                <td>启用</td>
+                <td><a class="btn btn-default" href="#">查看详情</a></td>
+            </tr>
+            <tr>
+                <td>101</td>
+                <td>第一会议室</td>
+                <td>10</td>
+                <td>启用</td>
+                <td><a class="btn btn-default" href="#">查看详情</a></td>
+            </tr>
+            <tr>
+                <td>101</td>
+                <td>第一会议室</td>
+                <td>10</td>
+                <td>启用</td>
+                <td><a class="btn btn-default" href="#">查看详情</a></td>
+            </tr>
+            <tr>
+                <td>101</td>
+                <td>第一会议室</td>
+                <td>10</td>
+                <td>启用</td>
+                <td><a class="btn btn-default" href="#">查看详情</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </fieldset>
+</div>
+<!--引入jquery-->
+<script src="js/jquery.js"></script>
+<!--引入bootstrap的js功能-->
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        //显示所有会议信息
+        $.post("FindRoomServlet", function (data) {
+            //先将tbody中的数据清空
+            $("tbody").empty();
+            $.each(data, function (index, el) {
+                var html = "<tr>";
+                html += "<td>" + el.housenum + "</td>";
+                html += "<td>" + el.rname + "</td>";
+                html += "<td>" + el.maxnum + "</td>";
+                var status = '';
+                if (el.status == 0) {
+                    status = "可用";
+                } else {
+                    status = "不可用";
+                }
+                html += "<td>" + status + "</td>";
+                html += '<td><a  rid="' + el.rid + '" class="delBtn"  value="查看详情" href="showOne.html?rid=' + el.rid + '" >查看详情</a></td></tr>';
+
+                //将html拼接到tbody中
+                $("tbody").append(html);
+            })
+        }, "json")
+
+
+    })
+
+
+</script>
+</body>
+</html>
